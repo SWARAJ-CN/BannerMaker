@@ -8,7 +8,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user session parameters are stored locally
+  
     const activeSession = localStorage.getItem("gridflow_session");
     if (activeSession) {
       setIsAuthenticated(true);
@@ -16,7 +16,7 @@ function App() {
     setLoading(false);
   }, []);
 
-  // Handle live session initialization down from Login child component
+
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
   };

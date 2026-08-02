@@ -11,23 +11,27 @@ export default function Home() {
   const [username, setUsername] = useState('Creator');
 
   useEffect(() => {
-    // Parse the active user profile data out of storage
-    const activeSession = localStorage.getItem("gridflow_session");
-    if (activeSession) {
+    // ✨ FIX: Fetch the actual user data object, not the session token
+    const storedUserData = localStorage.getItem("userdata");
+    
+    if (storedUserData) {
       try {
-        const userData = JSON.parse(activeSession);
+        const userData = JSON.parse(storedUserData);
+        // Extract username from the parsed object
         if (userData && userData.username) {
           setUsername(userData.username);
         }
       } catch (err) {
-        console.error("Failed to parse user session stream:", err);
+        console.error("Failed to parse user data stream:", err);
       }
     }
   }, []);
 
   const handleLogout = () => {
+    // ✨ FIX: Clear both session token and user data on logout
     localStorage.removeItem("gridflow_session");
-    window.location.reload(); // Hard re-route parameters back to entry node
+    localStorage.removeItem("userdata");
+    window.location.reload(); 
   };
 
   const handleTemplateSelect = (template) => {
@@ -35,7 +39,8 @@ export default function Home() {
   };
 
   // Extract first letter parameter for avatar graphic mapping
-  const avatarLetter = username.charAt(0).toUpperCase();
+  // Fallback to 'C' if username is somehow empty to prevent rendering errors
+  const avatarLetter = username ? username.charAt(0).toUpperCase() : 'C';
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased">

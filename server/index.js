@@ -1,30 +1,20 @@
-const jsonServer = require("json-server");
-const path = require("path");
 
-const server = jsonServer.create();
-const router = jsonServer.router(path.join(__dirname, "db.json"));
-const middlewares = jsonServer.defaults();
+import { json } from "express"
+import express from 'express'
+import cors from 'cors'
+import { configDotenv } from "dotenv"
+import { connectDB } from "./config/db.js"
+import route from "./route/userRoute.js"
 
-const PORT = process.env.PORT || 3000;
+configDotenv()
+connectDB()
+const app = express()
+app.use(cors())
+app.use(json())
 
-server.use(middlewares);
-server.use(jsonServer.bodyParser);
+app.use(route)
 
-// Optional: Enable CORS
-server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
+app.listen(process.env.PORT ,
+           ()=>console.log(`Server is running on => http://localhost:${process.env.PORT}`));
 
-  next();
-});
-
-server.use(router);
-
-server.listen(PORT, () => {
-  console.log(`JSON Server running on port ${PORT}`);
-});
